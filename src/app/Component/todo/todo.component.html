@@ -46,27 +46,26 @@
     <button
       type="button"
       class="btn allbtn"
-      [ngClass]="{ active: filters === 'all' }"
-      (click)="filters = 'all'"
+      [ngClass]="{ active: path === 'all' }"
     >
-      All
+      <a [routerLink]="['/all']">All</a>
     </button>
     <button
       type="button"
       class="btn activebtn"
-      [ngClass]="{ active: filters === 'active' }"
-      (click)="filters = 'active'"
+      [ngClass]="{ active: path === 'active' }"
     >
-      Active
+      <a [routerLink]="['/active']">Active</a>
     </button>
+    >
     <button
       type="button"
       class="btn completedbtn"
-      [ngClass]="{ active: filters === 'completed' }"
-      (click)="filters = 'completed'"
+      [ngClass]="{ active: path === 'completed' }"
     >
-      completed
+      <a [routerLink]="['/completed']">completed</a>
     </button>
+
     <button type="button" class="btn clearbtn" (click)="clearCompleted()">
       clear completed
     </button>

@@ -1,85 +1,46 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { TodoServiceService } from './todo-service.service';
 
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.css'],
+  providers: [TodoServiceService],
 })
 export class TodoComponent implements OnInit {
-  todos: any = [];
   todoTitle: any;
-  idForTodo: any;
-  filters: any;
-  constructor() {}
-
+  path: any = 'all';
+  constructor(
+    private service: TodoServiceService,
+    private route: ActivatedRoute
+  ) {}
   ngOnInit(): void {
-    this.filters = 'all';
-    this.idForTodo = 5;
-    this.todoTitle = '';
-    this.todos = [
-      {
-        id: 1,
-        title: 'Install Angular CLI',
-        isCompleted: false,
-        editing: false,
-      },
-      {
-        id: 2,
-        title: 'Style App',
-        isCompleted: false,
-        editing: false,
-      },
-      {
-        id: 3,
-        title: 'Finish Service Functionality',
-        isCompleted: false,
-        editing: false,
-      },
-      {
-        id: 4,
-        title: 'Setup API',
-        isCompleted: false,
-        editing: false,
-      },
-    ];
+    this.route.params.subscribe((params) => {
+      this.path = params['status'];
+    });
   }
   addTodo(): void {
-    if (this.todoTitle.trim().length === 0) {
-      return;
-    }
-    this.todos.push({
-      id: this.idForTodo,
-      title: this.todoTitle,
-      isCompleted: false,
-      editing: false,
-    });
+    this.service.add(this.todoTitle);
     this.todoTitle = '';
-    this.idForTodo++;
   }
   editItem(todo: any): void {
-    todo.editing = true;
+    this.service.edit(todo);
   }
   doneEdit(todo: any) {
-    todo.editing = false;
+    this.service.completeEditing(todo);
   }
-
   deleteItem(id: number): void {
-    this.todos = this.todos.filter((todo: any) => todo.id !== id);
+    this.service.deleteTodo(id);
   }
   remaining(): number {
-    return this.todos.filter((todo: any) => !todo.isCompleted).length;
+    return this.service.todos.filter((todo: any) => !todo.isCompleted).length;
   }
   clearCompleted() {
-    this.todos = this.todos.filter((todo: any) => !todo.isCompleted);
+    this.service.clearCompleted();
   }
+
   todosFilter(): any {
-    if (this.filters == 'all') {
-      return this.todos;
-    } else if (this.filters == 'active') {
-      return this.todos.filter((todo: any) => !todo.isCompleted);
-    } else if (this.filters == 'completed') {
-      return this.todos.filter((todo: any) => todo.isCompleted);
-    }
-    return this.todos;
+    return this.service.todosFilter(this.path);
   }
 }
